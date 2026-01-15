@@ -77,7 +77,7 @@ export function Slider({
                     <div className="flex justify-between items-end text-slate-100">
                         <span className="text-lg font-medium">{label}</span>
                         <span className="text-2xl font-bold font-mono text-blue-400">
-                            {unit}{value.toLocaleString()}
+                            {unit === '%' ? '' : unit}{value.toLocaleString()}
                             {unit === '%' ? '%' : ''}
                         </span>
                     </div>
