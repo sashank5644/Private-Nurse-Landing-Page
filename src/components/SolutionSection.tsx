@@ -4,7 +4,22 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Play, CheckCircle2 } from 'lucide-react';
 
+
 export function SolutionSection() {
+    const audioRef = React.useRef<HTMLAudioElement>(null);
+    const [isPlaying, setIsPlaying] = React.useState(false);
+
+    const togglePlay = () => {
+        if (audioRef.current) {
+            if (isPlaying) {
+                audioRef.current.pause();
+            } else {
+                audioRef.current.play();
+            }
+            setIsPlaying(!isPlaying);
+        }
+    };
+
     return (
         <section className="relative min-h-screen flex flex-col items-center justify-center py-24 px-6 md:px-12 bg-slate-900 border-t border-slate-800">
 
@@ -63,7 +78,7 @@ export function SolutionSection() {
                         </div>
                     </motion.div>
 
-                    {/* Video Column */}
+                    {/* Audio Demo Column */}
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -71,19 +86,60 @@ export function SolutionSection() {
                         transition={{ delay: 0.4 }}
                         className="relative"
                     >
-                        <div className="aspect-video bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center group overflow-hidden shadow-2xl relative">
-                            {/* Placeholder Video Pattern */}
-                            <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.05)_50%,transparent_75%,transparent_100%)] bg-[length:20px_20px]" />
-
-                            <div className="space-y-4 text-center z-10 p-6">
-                                <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto backdrop-blur-sm group-hover:scale-110 transition-transform">
-                                    <Play className="text-white ml-1" fill="white" />
+                        <div className="w-full bg-slate-950 rounded-2xl border border-slate-800 p-8 shadow-2xl relative overflow-hidden group">
+                            {/* Decorative Waveform BG */}
+                            <div className="absolute inset-0 opacity-10 flex items-center justify-center pointer-events-none">
+                                <div className="flex gap-1 items-center h-full">
+                                    {[...Array(20)].map((_, i) => (
+                                        <motion.div
+                                            key={i}
+                                            animate={{ height: isPlaying ? [10, 40, 10] : 10 }}
+                                            transition={{
+                                                duration: 0.5,
+                                                repeat: Infinity,
+                                                delay: i * 0.05,
+                                                ease: "easeInOut"
+                                            }}
+                                            className="w-2 bg-blue-500 rounded-full"
+                                            style={{ height: 10 }}
+                                        />
+                                    ))}
                                 </div>
-                                <p className="text-slate-300 font-medium">Watch the Demo</p>
+                            </div>
+
+                            <div className="relative z-10 flex flex-col items-center text-center space-y-6">
+                                <h3 className="text-xl font-bold text-white">Listen to a Sample Call</h3>
+                                <p className="text-slate-400 text-sm">
+                                    Experience the natural latency and human tone.
+                                </p>
+
+                                <button
+                                    onClick={togglePlay}
+                                    className="w-20 h-20 bg-emerald-500 hover:bg-emerald-400 rounded-full flex items-center justify-center transition-all transform hover:scale-105 shadow-lg shadow-emerald-500/20"
+                                >
+                                    {isPlaying ? (
+                                        <div className="flex gap-1.5">
+                                            <div className="w-2 h-8 bg-white rounded-full" />
+                                            <div className="w-2 h-8 bg-white rounded-full" />
+                                        </div>
+                                    ) : (
+                                        <Play className="text-white ml-2" fill="white" size={32} />
+                                    )}
+                                </button>
+
+                                <audio
+                                    ref={audioRef}
+                                    src="/demo.mp3"
+                                    onEnded={() => setIsPlaying(false)}
+                                />
+
+                                <p className="text-xs text-emerald-500 font-mono uppercase tracking-wider">
+                                    {isPlaying ? 'Playing Now...' : 'Click to Play'}
+                                </p>
                             </div>
                         </div>
                         {/* Decoration */}
-                        <div className="absolute -z-10 -bottom-10 -right-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl" />
+                        <div className="absolute -z-10 -bottom-10 -right-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl" />
                     </motion.div>
 
                 </div>
